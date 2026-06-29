@@ -693,10 +693,10 @@ export default function App() {
     <div className="min-h-screen bg-premium-bg text-[#eaebed] relative transition-colors duration-400">
       
       {/* Sticky header and ticker container */}
-      <div className="sticky top-0 z-30 w-full bg-[#040406] border-b border-premium-border select-none">
+      <div className="sticky top-0 z-30 w-full bg-[#040406]/85 backdrop-blur-md border-b border-white/10 select-none">
         {/* Top Professional Navigation Bar */}
-        <header className="flex items-center justify-between px-10 py-7 bg-transparent">
-          <div className="flex items-center gap-12">
+        <header className="flex items-center justify-between max-w-[1680px] mx-auto px-6 md:px-8 py-4 bg-transparent">
+          <div className="flex items-center gap-8 md:gap-12">
             {/* Logo */}
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-premium-accent/15 rounded-lg flex items-center justify-center border border-premium-accent/30 text-premium-accent">
@@ -712,7 +712,7 @@ export default function App() {
             </div>
             
             {/* Nav Tabs */}
-            <nav className="flex items-center gap-8 text-[14.5px] font-bold">
+            <nav className="flex items-center gap-6 md:gap-8 text-[14.5px] font-bold">
               <button 
                 onClick={() => { setActiveTab('dashboard'); setSelectedStock(null); }}
                 className={`pb-1 transition-all duration-200 border-b-2 hover:text-white ${
@@ -737,7 +737,7 @@ export default function App() {
           </div>
 
           {/* Right side controls: Theme Manager + Connection Badges */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 md:gap-8">
             
             {/* Theme Customizer Pill Selector */}
             <div className="hidden sm:flex items-center bg-white/5 p-1 rounded-full border border-white/[0.05] text-[11px] font-bold">
