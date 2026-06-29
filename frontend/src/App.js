@@ -592,7 +592,7 @@ export default function App() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="w-full border border-premium-border divide-y divide-premium-border"
+            className="w-full space-y-3.5"
           >
             {leaderboard.map((item, index) => {
               const score = item.score;
@@ -602,17 +602,17 @@ export default function App() {
               const barWidth = Math.min(100, (Math.abs(score) / maxAbsScore) * 100);
               
               const rowBorderAccent = isPositive
-                ? 'hover:border-l-[#10b981]'
+                ? 'border-l-[#10b981]'
                 : isNegative
-                  ? 'hover:border-l-[#f43f5e]'
-                  : 'hover:border-l-slate-400';
+                  ? 'border-l-[#f43f5e]'
+                  : 'border-l-slate-500';
 
               return (
                 <motion.div 
                   key={item.ticker}
                   variants={itemVariants}
                   onClick={() => setSelectedStock(item.ticker)}
-                  className={`flex items-center justify-between px-6 py-4.5 hover:bg-zinc-900/50 hover:backdrop-blur-sm transition-all duration-300 cursor-pointer select-none group border-l-3 border-l-transparent ${rowBorderAccent}`}
+                  className={`flex items-center justify-between px-7 py-5.5 bg-[#0a0a0e]/30 hover:bg-zinc-900/50 hover:backdrop-blur-sm transition-all duration-300 cursor-pointer select-none group border border-premium-border border-l-4 rounded-lg ${rowBorderAccent}`}
                 >
                   {/* Left Side: Rank Badge & Symbol */}
                   <div className="flex items-center gap-4">
@@ -823,21 +823,20 @@ export default function App() {
             {/* 10-Stock WATCHLIST grid */}
             <div className="py-8 border-b border-premium-border">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-[18px] font-extrabold uppercase tracking-wide text-premium-textTitle flex items-center gap-2.5">
-                  <Layers className="text-premium-accent w-5.5 h-5.5" /> Market Watchlist
+                <h2 className="text-[17px] font-extrabold uppercase tracking-wider text-premium-textTitle flex items-center gap-2">
+                  <TrendingUp className="text-premium-accent w-5 h-5" /> MARKET WATCHLIST
                 </h2>
                 
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 text-[11px] font-bold text-[#10b981] border border-[#10b981]/10">
-                  <span className="w-2 h-2 bg-[#10b981] rounded-full animate-pulse shadow-[0_0_6px_#10b981]"></span>
-                  <span>STREAMING TICKER FEED</span>
+                <div className="flex items-center gap-1.5 text-[10.5px] font-bold text-[#10b981] tracking-wider">
+                  <span className="w-1.5 h-1.5 bg-[#10b981] rounded-full animate-pulse shadow-[0_0_6px_#10b981]"></span>
+                  <span>LIVE STREAMING</span>
                 </div>
               </div>
 
-              <motion.div 
-                layout 
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+              <div 
+                className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-premium-border"
               >
-                {Object.entries(stocks).map(([t, price]) => {
+                {Object.entries(stocks).map(([t, price], index) => {
                   const history = priceHistory[t] || [];
                   const firstPrice = history[0] || price;
                   const change = price - firstPrice;
@@ -849,57 +848,45 @@ export default function App() {
                     ? (flash.direction === 'up' ? 'animate-flash-up' : 'animate-flash-down')
                     : '';
 
-                  const neonGlowClass = isUp
-                    ? 'hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] hover:border-[#10b981]/30'
-                    : 'hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:border-[#f43f5e]/30';
-
                   return (
-                    <motion.div 
-                      layout
+                    <div 
                       key={t} 
                       onClick={() => setSelectedStock(t)}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className={`p-6 flex flex-col justify-between cursor-pointer bg-white/[0.02] backdrop-blur-md border border-zinc-800 rounded-xl transition-all duration-300 relative overflow-hidden group select-none ${neonGlowClass} ${flashClass}`}
+                      className={`p-6 md:p-8 flex flex-col justify-between cursor-pointer transition-colors duration-200 relative select-none hover:bg-white/[0.01] border-b border-premium-border ${
+                        index % 3 !== 2 ? 'md:border-r border-premium-border' : ''
+                      } ${flashClass}`}
                     >
-                      <div className="relative z-10">
+                      <div>
                         <div className="flex items-start justify-between">
                           <div>
-                            <span className="text-[17px] font-extrabold text-white tracking-tight">{t}</span>
-                            <span className="text-[11.5px] text-premium-textMuted font-medium block truncate max-w-[110px] mt-0.5">{companyNames[t] || 'Asset'}</span>
+                            <span className="text-[16px] font-bold text-white tracking-tight">{t}</span>
+                            <span className="text-[11.5px] text-premium-textMuted font-medium block mt-0.5">{companyNames[t] || 'Asset'}</span>
                           </div>
                           
-                          <div className={`flex items-center gap-0.5 px-2 py-0.5 rounded text-[11px] font-extrabold tracking-wide ${
+                          <div className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-sm text-[10.5px] font-extrabold ${
                             isUp 
-                              ? 'bg-[#10b981]/15 text-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.1)]' 
-                              : 'bg-[#f43f5e]/15 text-[#f43f5e] shadow-[0_0_8px_rgba(244,63,94,0.1)]'
+                              ? 'bg-[#10b981]/10 text-[#10b981]' 
+                              : 'bg-[#f43f5e]/10 text-[#f43f5e]'
                           }`}>
                             {isUp ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                            <span>{percentChange}%</span>
+                            <span>{isUp ? '+' : ''}{percentChange}%</span>
                           </div>
                         </div>
 
-                        <div className="flex items-baseline gap-1.5 mt-5">
-                          <span className="text-[24px] font-extrabold text-white tracking-tight font-mono">
+                        <div className="flex items-center justify-between mt-6">
+                          <span className="text-[28px] md:text-[32px] font-extrabold text-white tracking-tight font-mono leading-none">
                             ${price.toFixed(2)}
                           </span>
+                          
+                          <div className="w-24 md:w-28 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <Sparkline history={history} isUp={isUp} />
+                          </div>
                         </div>
                       </div>
-
-                      {/* Sparkline & Details */}
-                      <div className="relative z-10 flex items-center justify-between mt-5 pt-3.5 border-t border-white/[0.04]">
-                        <span className="text-[9px] font-mono text-premium-textMuted tracking-wider uppercase">
-                          Vol: {(volumes[t] / 1000).toFixed(0)}k
-                        </span>
-                        
-                        <div className="w-18 opacity-75 group-hover:opacity-100 transition-opacity">
-                          <Sparkline history={history} isUp={isUp} />
-                        </div>
-                      </div>
-                    </motion.div>
+                    </div>
                   );
                 })}
-              </motion.div>
+              </div>
             </div>
           </div>
         ) : (
