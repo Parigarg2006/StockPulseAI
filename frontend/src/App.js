@@ -592,7 +592,7 @@ export default function App() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="w-full space-y-4"
+            className="w-full space-y-3"
           >
             {leaderboard.map((item, index) => {
               const score = item.score;
@@ -612,16 +612,13 @@ export default function App() {
                   key={item.ticker}
                   variants={itemVariants}
                   onClick={() => setSelectedStock(item.ticker)}
-                  className={`flex items-center justify-between px-7 py-5.5 bg-[#0a0a0e]/50 backdrop-blur-md transition-all duration-300 cursor-pointer select-none group border border-zinc-800 rounded-xl relative overflow-hidden ${rowBorderAccent}`}
+                  className={`flex items-center justify-between px-6 py-4.5 hover:bg-zinc-900/50 transition-all duration-300 cursor-pointer select-none group border-b border-premium-border border-l-3 border-l-transparent ${rowBorderAccent}`}
                 >
-                  {/* Cyber-scan cyan edge-light */}
-                  <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
-
                   {/* Left Side: Rank Badge & Symbol */}
                   <div className="flex items-center gap-4">
                     {getRankBadge(index)}
                     <div className="flex items-baseline gap-2">
-                      <span className="text-[15.5px] font-extrabold text-white group-hover:text-[#06b6d4] transition-colors">
+                      <span className="text-[15.5px] font-extrabold text-white group-hover:text-premium-accent transition-colors">
                         {item.ticker}
                       </span>
                       <span className="text-[11.5px] text-premium-textMuted hidden sm:inline">
@@ -630,59 +627,53 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Middle: Progress Bar with plasma flow energy effect & active percentage indicators */}
+                  {/* Middle: Progress Bar with accurate capsule bars & inline percentage indicators */}
                   <div className="hidden md:flex items-center gap-3.5 w-[250px] flex-shrink-0 mx-6">
-                    <span className={`text-[10px] font-black font-mono w-10 text-right ${isPositive ? 'text-[#06b6d4]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
+                    <span className={`text-[10px] font-black font-mono w-10 text-right ${isPositive ? 'text-[#10b981]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
                       {isNegative ? `${barWidth.toFixed(1)}%` : ''}
                     </span>
                     
-                    <div className="h-3 w-full bg-zinc-900/80 rounded-full overflow-hidden flex relative border border-white/[0.03]">
+                    <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden flex relative border border-white/[0.01]">
                       <div className="absolute inset-y-0 left-1/2 w-[1.5px] bg-[#1a1a24] z-10"></div>
                       
-                      {/* Left (Bearish Plasma) */}
+                      {/* Left (Bearish Capsule) */}
                       <div className="w-1/2 flex justify-end">
                         {isNegative && (
                           <div 
                             style={{ width: `${barWidth}%` }} 
-                            className="h-full bg-gradient-to-l from-[#f43f5e] to-[#ef4444] rounded-l-full shadow-[0_0_10px_#f43f5e] relative"
-                          >
-                            {/* Plasma flow energy animation overlay */}
-                            <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                          </div>
+                            className="h-full bg-gradient-to-l from-[#f43f5e] to-[#ef4444] rounded-l-full shadow-[0_0_8px_#f43f5e]"
+                          ></div>
                         )}
                       </div>
 
-                      {/* Right (Bullish Plasma) */}
+                      {/* Right (Bullish Capsule) */}
                       <div className="w-1/2">
                         {isPositive && (
                           <div 
                             style={{ width: `${barWidth}%` }} 
-                            className="h-full bg-gradient-to-r from-[#06b6d4] to-[#0891b2] rounded-r-full shadow-[0_0_10px_#06b6d4] relative"
-                          >
-                            {/* Plasma flow energy animation overlay */}
-                            <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                          </div>
+                            className="h-full bg-gradient-to-r from-[#10b981] to-[#059669] rounded-r-full shadow-[0_0_8px_#10b981]"
+                          ></div>
                         )}
                       </div>
                     </div>
 
-                    <span className={`text-[10px] font-black font-mono w-10 text-left ${isPositive ? 'text-[#06b6d4]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
+                    <span className={`text-[10px] font-black font-mono w-10 text-left ${isPositive ? 'text-[#10b981]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
                       {isPositive ? `${barWidth.toFixed(1)}%` : ''}
                     </span>
                   </div>
 
                   {/* Right Side: Score & Label */}
                   <div className="flex items-center gap-6">
-                    <span className={`text-[9.5px] px-2.5 py-1 rounded-sm font-black uppercase tracking-widest border transition-all duration-300 ${
-                      isPositive ? 'bg-[#06b6d4]/10 text-[#06b6d4] border-[#06b6d4]/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]' :
-                      isNegative ? 'bg-[#f43f5e]/10 text-[#f43f5e] border-[#f43f5e]/30 shadow-[0_0_10px_rgba(244,63,94,0.2)]' :
-                      'bg-zinc-800/40 text-slate-400 border-zinc-700/50'
+                    <span className={`text-[11px] px-2 py-0.5 rounded font-extrabold uppercase tracking-wider shadow-[0_0_8px_rgba(255,255,255,0.02)] ${
+                      isPositive ? 'bg-[#10b981]/15 text-[#10b981]' :
+                      isNegative ? 'bg-[#f43f5e]/15 text-[#f43f5e]' :
+                      'bg-white/10 text-slate-400'
                     }`}>
                       {score > 1.5 ? 'Strong Bull' : score > 0 ? 'Bull' : score < -1.5 ? 'Strong Bear' : score < 0 ? 'Bear' : 'Neutral'}
                     </span>
                     <span className={`text-[14.5px] font-extrabold font-mono w-16 text-right ${
-                      isPositive ? 'text-[#06b6d4] drop-shadow-[0_0_4px_#06b6d4]' :
-                      isNegative ? 'text-[#f43f5e] drop-shadow-[0_0_4px_#f43f5e]' :
+                      isPositive ? 'text-[#10b981]' :
+                      isNegative ? 'text-[#f43f5e]' :
                       'text-slate-400'
                     }`}>
                       {isPositive ? '+' : ''}{score.toFixed(2)}
