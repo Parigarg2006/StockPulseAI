@@ -592,7 +592,7 @@ export default function App() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="w-full space-y-3"
+            className="w-full"
           >
             {leaderboard.map((item, index) => {
               const score = item.score;
@@ -608,78 +608,79 @@ export default function App() {
                   : 'hover:border-l-slate-400';
 
                return (
-                <motion.div 
-                  key={item.ticker}
-                  variants={itemVariants}
-                  onClick={() => setSelectedStock(item.ticker)}
-                  className={`flex items-center justify-between px-6 py-4.5 hover:bg-zinc-900/50 transition-all duration-300 cursor-pointer select-none group border-b border-premium-border border-l-3 border-l-transparent ${rowBorderAccent}`}
-                >
-                  {/* Left Side: Rank Badge & Symbol */}
-                  <div className="flex items-center gap-4">
-                    {getRankBadge(index)}
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-[15.5px] font-extrabold text-white group-hover:text-premium-accent transition-colors">
-                        {item.ticker}
-                      </span>
-                      <span className="text-[11.5px] text-premium-textMuted hidden sm:inline">
-                        {companyNames[item.ticker]}
-                      </span>
+                <div key={item.ticker} className="mb-4">
+                  <motion.div 
+                    variants={itemVariants}
+                    onClick={() => setSelectedStock(item.ticker)}
+                    className={`flex items-center justify-between px-6 py-5 hover:bg-zinc-900/50 transition-all duration-300 cursor-pointer select-none group border-b border-premium-border border-l-3 border-l-transparent ${rowBorderAccent}`}
+                  >
+                    {/* Left Side: Rank Badge & Symbol */}
+                    <div className="flex items-center gap-4">
+                      {getRankBadge(index)}
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-[15.5px] font-extrabold text-white group-hover:text-premium-accent transition-colors">
+                          {item.ticker}
+                        </span>
+                        <span className="text-[11.5px] text-premium-textMuted hidden sm:inline">
+                          {companyNames[item.ticker]}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Middle: Progress Bar with accurate capsule bars & inline percentage indicators */}
-                  <div className="hidden md:flex items-center gap-3.5 w-[250px] flex-shrink-0 mx-6">
-                    <span className={`text-[10px] font-black font-mono w-10 text-right ${isPositive ? 'text-[#10b981]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
-                      {isNegative ? `${barWidth.toFixed(1)}%` : ''}
-                    </span>
-                    
-                    <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden flex relative border border-white/[0.01]">
-                      <div className="absolute inset-y-0 left-1/2 w-[1.5px] bg-[#1a1a24] z-10"></div>
+                    {/* Middle: Progress Bar with accurate capsule bars & inline percentage indicators */}
+                    <div className="hidden md:flex items-center gap-3.5 w-[250px] flex-shrink-0 mx-6">
+                      <span className={`text-[10px] font-black font-mono w-10 text-right ${isPositive ? 'text-[#10b981]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
+                        {isNegative ? `${barWidth.toFixed(1)}%` : ''}
+                      </span>
                       
-                      {/* Left (Bearish Capsule) */}
-                      <div className="w-1/2 flex justify-end">
-                        {isNegative && (
-                          <div 
-                            style={{ width: `${barWidth}%` }} 
-                            className="h-full bg-gradient-to-l from-[#f43f5e] to-[#ef4444] rounded-l-full shadow-[0_0_8px_#f43f5e]"
-                          ></div>
-                        )}
+                      <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden flex relative border border-white/[0.01]">
+                        <div className="absolute inset-y-0 left-1/2 w-[1.5px] bg-[#1a1a24] z-10"></div>
+                        
+                        {/* Left (Bearish Capsule) */}
+                        <div className="w-1/2 flex justify-end">
+                          {isNegative && (
+                            <div 
+                              style={{ width: `${barWidth}%` }} 
+                              className="h-full bg-gradient-to-l from-[#f43f5e] to-[#ef4444] rounded-l-full shadow-[0_0_8px_#f43f5e]"
+                            ></div>
+                          )}
+                        </div>
+
+                        {/* Right (Bullish Capsule) */}
+                        <div className="w-1/2">
+                          {isPositive && (
+                            <div 
+                              style={{ width: `${barWidth}%` }} 
+                              className="h-full bg-gradient-to-r from-[#10b981] to-[#059669] rounded-r-full shadow-[0_0_8px_#10b981]"
+                            ></div>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Right (Bullish Capsule) */}
-                      <div className="w-1/2">
-                        {isPositive && (
-                          <div 
-                            style={{ width: `${barWidth}%` }} 
-                            className="h-full bg-gradient-to-r from-[#10b981] to-[#059669] rounded-r-full shadow-[0_0_8px_#10b981]"
-                          ></div>
-                        )}
-                      </div>
+                      <span className={`text-[10px] font-black font-mono w-10 text-left ${isPositive ? 'text-[#10b981]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
+                        {isPositive ? `${barWidth.toFixed(1)}%` : ''}
+                      </span>
                     </div>
 
-                    <span className={`text-[10px] font-black font-mono w-10 text-left ${isPositive ? 'text-[#10b981]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
-                      {isPositive ? `${barWidth.toFixed(1)}%` : ''}
-                    </span>
-                  </div>
-
-                  {/* Right Side: Score & Label */}
-                  <div className="flex items-center gap-6">
-                    <span className={`text-[11px] px-2 py-0.5 rounded font-extrabold uppercase tracking-wider shadow-[0_0_8px_rgba(255,255,255,0.02)] ${
-                      isPositive ? 'bg-[#10b981]/15 text-[#10b981]' :
-                      isNegative ? 'bg-[#f43f5e]/15 text-[#f43f5e]' :
-                      'bg-white/10 text-slate-400'
-                    }`}>
-                      {score > 1.5 ? 'Strong Bull' : score > 0 ? 'Bull' : score < -1.5 ? 'Strong Bear' : score < 0 ? 'Bear' : 'Neutral'}
-                    </span>
-                    <span className={`text-[14.5px] font-extrabold font-mono w-16 text-right ${
-                      isPositive ? 'text-[#10b981]' :
-                      isNegative ? 'text-[#f43f5e]' :
-                      'text-slate-400'
-                    }`}>
-                      {isPositive ? '+' : ''}{score.toFixed(2)}
-                    </span>
-                  </div>
-                </motion.div>
+                    {/* Right Side: Score & Label */}
+                    <div className="flex items-center gap-6">
+                      <span className={`text-[11px] px-2 py-0.5 rounded font-extrabold uppercase tracking-wider shadow-[0_0_8px_rgba(255,255,255,0.02)] ${
+                        isPositive ? 'bg-[#10b981]/15 text-[#10b981]' :
+                        isNegative ? 'bg-[#f43f5e]/15 text-[#f43f5e]' :
+                        'bg-white/10 text-slate-400'
+                      }`}>
+                        {score > 1.5 ? 'Strong Bull' : score > 0 ? 'Bull' : score < -1.5 ? 'Strong Bear' : score < 0 ? 'Bear' : 'Neutral'}
+                      </span>
+                      <span className={`text-[14.5px] font-extrabold font-mono w-16 text-right ${
+                        isPositive ? 'text-[#10b981]' :
+                        isNegative ? 'text-[#f43f5e]' :
+                        'text-slate-400'
+                      }`}>
+                        {isPositive ? '+' : ''}{score.toFixed(2)}
+                      </span>
+                    </div>
+                  </motion.div>
+                </div>
               );
             })}
           </motion.div>
