@@ -3,7 +3,6 @@ import { io } from 'socket.io-client';
 import { 
   Activity, 
   Newspaper, 
-  Server, 
   CheckCircle2, 
   XCircle,
   RefreshCw, 
@@ -28,12 +27,12 @@ const companyNames = {
   COIN: 'Coinbase Global'
 };
 
-// SVG Sparkline Component (Dashboard view)
+// SVG Sparkline Component
 function Sparkline({ history, isUp }) {
   if (!history || history.length < 2) {
     return (
-      <div className="h-6 flex items-center justify-center text-[9px] text-[#848e9c] font-mono">
-        Awaiting ticks...
+      <div className="h-6 flex items-center justify-center text-[10px] text-[#B2B5BE] font-sans font-medium">
+        Awaiting ticks
       </div>
     );
   }
@@ -49,33 +48,26 @@ function Sparkline({ history, isUp }) {
   }).join(' ');
   
   const strokeColor = isUp ? '#089981' : '#F23645';
-  const fillColor = isUp ? 'rgba(8, 153, 129, 0.06)' : 'rgba(242, 54, 69, 0.06)';
-  const fillPoints = `0,26 ${points} 100,26`;
 
   return (
     <svg className="w-full h-6 overflow-visible" viewBox="0 0 100 26" preserveAspectRatio="none">
       <polyline
         fill="none"
         stroke={strokeColor}
-        strokeWidth="1.2"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
         points={points}
-      />
-      <polygon
-        fill={fillColor}
-        points={fillPoints}
       />
     </svg>
   );
 }
 
-// Detailed Area Chart Component (Drawer view)
-// Viewport matches TradingView chart colors
+// Detailed Area Chart Component
 function DetailedChart({ history, isUp }) {
   if (!history || history.length < 2) {
     return (
-      <div className="h-36 flex items-center justify-center text-xs text-[#848e9c] font-mono border border-[#2A2E39] rounded bg-[#0b0e14]/50">
+      <div className="h-36 flex items-center justify-center text-xs text-[#B2B5BE] font-sans font-medium border border-[rgba(255,255,255,0.08)] rounded-[12px] bg-[#161616]/40">
         Awaiting live ticks to draw chart...
       </div>
     );
@@ -96,24 +88,24 @@ function DetailedChart({ history, isUp }) {
   const fillPoints = `0,120 ${points} 300,120`;
 
   return (
-    <svg className="w-full h-36 overflow-visible" viewBox="0 0 300 120" preserveAspectRatio="none">
+    <svg className="w-full h-36 overflow-visible font-sans" viewBox="0 0 300 120" preserveAspectRatio="none">
       <defs>
         <linearGradient id="chart-fill-green" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#089981" stopOpacity="0.25"/>
+          <stop offset="0%" stopColor="#089981" stopOpacity="0.10"/>
           <stop offset="100%" stopColor="#089981" stopOpacity="0.00"/>
         </linearGradient>
         <linearGradient id="chart-fill-red" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#F23645" stopOpacity="0.25"/>
+          <stop offset="0%" stopColor="#F23645" stopOpacity="0.10"/>
           <stop offset="100%" stopColor="#F23645" stopOpacity="0.00"/>
         </linearGradient>
       </defs>
       
       {/* Gridlines */}
-      <line x1="0" y1="30" x2="300" y2="30" stroke="#2A2E39" strokeWidth="0.5" strokeDasharray="2,4" />
-      <line x1="0" y1="60" x2="300" y2="60" stroke="#2A2E39" strokeWidth="0.5" strokeDasharray="2,4" />
-      <line x1="0" y1="90" x2="300" y2="90" stroke="#2A2E39" strokeWidth="0.5" strokeDasharray="2,4" />
+      <line x1="0" y1="30" x2="300" y2="30" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" strokeDasharray="2,4" />
+      <line x1="0" y1="60" x2="300" y2="60" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" strokeDasharray="2,4" />
+      <line x1="0" y1="90" x2="300" y2="90" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" strokeDasharray="2,4" />
       
-      {/* Area Fill Under the Curve */}
+      {/* Subtle Area Gradient Under the Curve */}
       <polygon fill={`url(#${fillColorId})`} points={fillPoints} />
       
       {/* Line polyline */}
@@ -130,8 +122,8 @@ function DetailedChart({ history, isUp }) {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' or 'news'
-  const [selectedStock, setSelectedStock] = useState(null); // Ticker symbol for Drawer details
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedStock, setSelectedStock] = useState(null);
   
   const [stocks, setStocks] = useState({});
   const [priceHistory, setPriceHistory] = useState({
@@ -347,39 +339,114 @@ export default function App() {
   const drawerIsUp = drawerChange >= 0;
   const drawerNews = headlineLogs.filter(log => log.ticker === selectedStock);
 
+  // AI Sentiment Leaderboard Component (Horizontal strip format)
+  const renderLeaderboard = () => {
+    return (
+      <div className="bg-[#131313] p-5 rounded-xl border border-[rgba(255,255,255,0.08)] shadow-lg w-full">
+        <h2 className="text-[17px] font-bold uppercase tracking-[0.01em] text-[#B2B5BE] mb-4 flex items-center gap-2 leading-relaxed">
+          <Brain className="text-[#2962ff] w-5 h-5" /> AI Sentiment Leaderboard
+        </h2>
+
+        {leaderboard.length === 0 ? (
+          <div className="py-4 text-center text-[#B2B5BE] text-sm leading-relaxed">
+            No sentiment data yet. Submit headlines!
+          </div>
+        ) : (
+          <div className="flex flex-row gap-4 overflow-x-auto pb-2 select-none scrollbar-thin scrollbar-thumb-white/10">
+            {leaderboard.map((item) => {
+              const score = item.score;
+              const isPositive = score > 0;
+              const isNegative = score < 0;
+              
+              const barWidth = Math.min(100, (Math.abs(score) / maxAbsScore) * 100);
+              
+              return (
+                <div 
+                  key={item.ticker} 
+                  onClick={() => setSelectedStock(item.ticker)}
+                  className="flex-shrink-0 w-[195px] bg-[#161616] p-4 rounded-lg border border-[rgba(255,255,255,0.08)] hover:border-slate-500 cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="flex justify-between items-start mb-2 leading-relaxed">
+                    <div className="truncate pr-1">
+                      <span className="text-[16px] font-bold text-white block leading-none">{item.ticker}</span>
+                      <span className="text-[13.6px] text-[#B2B5BE]/80 truncate block mt-1 leading-none">{companyNames[item.ticker]}</span>
+                    </div>
+                    
+                    <span className={`px-1.5 py-0.5 rounded text-[13.6px] font-bold ${
+                      isPositive ? 'bg-[#089981]/10 text-[#089981]' :
+                      isNegative ? 'bg-[#F23645]/10 text-[#F23645]' :
+                      'bg-slate-800 text-slate-400'
+                    }`}>
+                      {isPositive ? '+' : ''}{score.toFixed(2)}
+                    </span>
+                  </div>
+
+                  {/* Bidirectional progress bar container (height 4px) */}
+                  <div className="h-[4px] w-full bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden flex relative mt-2.5">
+                    <div className="absolute inset-y-0 left-1/2 w-0.5 bg-[rgba(255,255,255,0.12)] z-10"></div>
+                    
+                    {/* Left (Negative) */}
+                    <div className="w-1/2 flex justify-end">
+                      {isNegative && (
+                        <div 
+                          style={{ width: `${barWidth}%` }} 
+                          className="h-full bg-[#F23645] rounded-l-full"
+                        ></div>
+                      )}
+                    </div>
+
+                    {/* Right (Positive) */}
+                    <div className="w-1/2">
+                      {isPositive && (
+                        <div 
+                          style={{ width: `${barWidth}%` }} 
+                          className="h-full bg-[#089981] rounded-r-full"
+                        ></div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-black text-[#d1d4dc] p-4 md:p-8 relative overflow-x-hidden">
+    <div className="min-h-screen bg-black text-[#d1d4dc] p-4 md:p-8 relative font-sans">
       
       {/* Top TradingView-Style Navigation Bar */}
-      <header className="flex items-center justify-between py-5 mb-8 bg-black sticky top-0 z-30 select-none">
+      <header className="flex items-center justify-between py-5 mb-8 bg-black border-b border-[rgba(255,255,255,0.08)] sticky top-0 z-30 select-none">
         <div className="flex items-center gap-10">
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
               <path d="M3 17l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round"/>
               <circle cx="21" cy="7" r="1" fill="currentColor"/>
             </svg>
-            <span className="font-bold text-lg text-white tracking-tight">StockPulse AI</span>
+            <span className="font-bold text-[19px] text-white tracking-tight leading-relaxed">StockPulse AI</span>
           </div>
           
-          {/* Menu links - exact copy of visual style */}
-          <nav className="flex items-center gap-6 text-sm font-semibold">
+          {/* Tabs - font-size: 0.9rem-0.95rem (15px) */}
+          <nav className="flex items-center gap-6 text-[15px] font-semibold">
             <button 
               onClick={() => { setActiveTab('dashboard'); setSelectedStock(null); }}
-              className={`pb-1 transition-colors duration-200 ${
+              className={`pb-1.5 transition-colors duration-200 leading-relaxed ${
                 activeTab === 'dashboard' 
-                  ? 'text-[#2962ff]' 
-                  : 'text-[#b2b5be] hover:text-white'
+                  ? 'text-white' 
+                  : 'text-[#B2B5BE] hover:text-white'
               }`}
             >
               Dashboard
             </button>
             <button 
               onClick={() => { setActiveTab('news'); setSelectedStock(null); }}
-              className={`pb-1 transition-colors duration-200 ${
+              className={`pb-1.5 transition-colors duration-200 leading-relaxed ${
                 activeTab === 'news' 
-                  ? 'text-[#2962ff]' 
-                  : 'text-[#b2b5be] hover:text-white'
+                  ? 'text-white' 
+                  : 'text-[#B2B5BE] hover:text-white'
               }`}
             >
               AI News Center
@@ -387,44 +454,47 @@ export default function App() {
           </nav>
         </div>
 
-        {/* Network Connections */}
-        <div className="flex items-center gap-3 text-[10px]">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#131722] border border-[#2A2E39]">
+        {/* Network Connections - font-size: 0.9rem-0.95rem (15px) */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 px-[12px] py-[5px] rounded-full bg-[rgba(255,255,255,0.06)] text-[15px] font-semibold text-[#B2B5BE] border-none leading-relaxed" title={socketConnected ? "Connection is live" : "Connection offline"}>
             <span className={`w-1.5 h-1.5 rounded-full ${socketConnected ? 'bg-[#089981] animate-pulse' : 'bg-[#F23645]'}`}></span>
-            <span className="text-[#b2b5be] font-mono">SOCKET</span>
+            <span>LIVE</span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#131722] border border-[#2A2E39]">
-            <Server className={`w-3 h-3 ${
+          <div className="flex items-center gap-1.5 px-[12px] py-[5px] rounded-full bg-[rgba(255,255,255,0.06)] text-[15px] font-semibold text-[#B2B5BE] border-none leading-relaxed" title={dbHealth.api === 'healthy' && dbHealth.redis === 'healthy' && dbHealth.mongo === 'healthy' ? "All backend systems fully operational" : "Backend systems degradation detected"}>
+            <span className={`w-1.5 h-1.5 rounded-full ${
               dbHealth.api === 'healthy' && dbHealth.redis === 'healthy' && dbHealth.mongo === 'healthy'
-                ? 'text-[#089981]' : 'text-[#F23645]'
-            }`} />
-            <span className="text-[#b2b5be] font-mono hidden sm:inline">INFRA CONNECTED</span>
+                ? 'bg-[#089981]' : 'bg-[#F23645]'
+            }`}></span>
+            <span className="hidden md:inline">SYSTEMS OPERATIONAL</span>
           </div>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="w-full">
+      <main className="w-full animate-fade-in">
         {activeTab === 'dashboard' ? (
           /* ================================================================= */
-          /* DASHBOARD TAB                                                     */
+          /* DASHBOARD VIEW                                                    */
           /* ================================================================= */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="w-full">
             
-            {/* Left: 10-Stock WATCHLIST grid */}
-            <div className="lg:col-span-2 bg-[#131722] p-5 rounded-md border border-[#2A2E39] shadow-lg">
+            {/* 10-Stock WATCHLIST grid taking full width */}
+            <div className="bg-[#131313] p-5 rounded-xl border border-[rgba(255,255,255,0.08)] shadow-lg">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-[#b2b5be] flex items-center gap-2">
-                  <Activity className="text-[#2962ff] w-4 h-4" /> Market Watchlist
+                {/* Section title: text-[17px] font-bold leading-relaxed */}
+                <h2 className="text-[17px] font-bold uppercase tracking-[0.01em] text-[#B2B5BE] flex items-center gap-2 leading-relaxed">
+                  <Activity className="text-[#2962ff] w-5 h-5" /> Market Watchlist
                 </h2>
-                <div className="flex items-center gap-1.5 text-xs text-[#089981] font-medium">
+                
+                <div className="flex items-center gap-1.5 px-[12px] py-[5px] rounded-full bg-[rgba(255,255,255,0.06)] text-[15px] font-semibold text-[#089981] leading-relaxed">
                   <span className="w-1.5 h-1.5 bg-[#089981] rounded-full animate-pulse"></span>
-                  <span className="font-mono text-[10px]">LIVE STREAMING</span>
+                  <span>LIVE STREAMING</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {/* Grid columns widened dynamically */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {Object.entries(stocks).map(([ticker, price]) => {
                   const history = priceHistory[ticker] || [];
                   const firstPrice = history[0] || price;
@@ -441,28 +511,32 @@ export default function App() {
                     <div 
                       key={ticker} 
                       onClick={() => setSelectedStock(ticker)}
-                      className={`bg-[#0c0f16] p-4 rounded-md border border-[#2A2E39] flex flex-col justify-between cursor-pointer transition-all duration-300 hover:border-slate-500 ${flashClass}`}
+                      className={`bg-[#161616] p-5 rounded-xl border border-[rgba(255,255,255,0.08)] flex flex-col justify-between cursor-pointer transition-all duration-200 hover:border-slate-500 hover:shadow-[0_1px_2px_rgba(0,0,0,0.4)] ${flashClass}`}
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <span className="font-bold text-sm text-white font-mono">{ticker}</span>
-                          <p className="text-[10px] text-[#848e9c] font-medium truncate max-w-[100px] mt-0.5">{companyNames[ticker] || 'Stock Asset'}</p>
+                        <div className="leading-snug">
+                          {/* Ticker: 1rem (16px), font-weight: 700 */}
+                          <span className="text-[16px] font-bold text-white">{ticker}</span>
+                          {/* Company name: 0.85rem (13.6px) */}
+                          <p className="text-[13.6px] text-[#B2B5BE]/80 font-medium truncate max-w-[130px] mt-0.5">{companyNames[ticker] || 'Stock Asset'}</p>
                         </div>
                         
-                        <div className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold font-mono ${
+                        {/* Change badges: 0.85rem (13.6px) */}
+                        <div className={`flex items-center gap-0.5 px-2 py-0.5 rounded text-[13.6px] font-semibold leading-relaxed ${
                           isUp ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#F23645]/10 text-[#F23645]'
                         }`}>
-                          {isUp ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                          {isUp ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                           <span>{percentChange}%</span>
                         </div>
                       </div>
 
-                      <div className="flex items-end justify-between mt-4">
-                        <span className="text-lg font-bold font-mono text-white">
+                      <div className="flex items-end justify-between mt-5">
+                        {/* Price: 1.875rem (30px), font-weight: 700 */}
+                        <span className="text-[30px] font-bold text-white tracking-tight leading-none">
                           ${price.toFixed(2)}
                         </span>
                         
-                        <div className="w-20 bg-black/40 p-1 rounded border border-[#2a2e39]">
+                        <div className="w-20 bg-black/20 p-1 rounded border border-[rgba(255,255,255,0.08)]">
                           <Sparkline history={history} isUp={isUp} />
                         </div>
                       </div>
@@ -472,92 +546,23 @@ export default function App() {
               </div>
             </div>
 
-            {/* Right: AI Leaderboard */}
-            <div className="bg-[#131722] p-5 rounded-md border border-[#2A2E39] shadow-lg h-fit">
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-[#b2b5be] flex items-center gap-2">
-                  <Brain className="text-[#2962ff] w-4 h-4" /> AI Sentiment Leaderboard
-                </h2>
-                <span className="text-[10px] bg-[#2962ff]/10 text-[#2962ff] px-2 py-0.5 rounded font-mono font-bold border border-[#2962ff]/20">
-                  REDIS ZSET
-                </span>
-              </div>
-
-              {leaderboard.length === 0 ? (
-                <div className="py-12 text-center text-[#848e9c] text-xs">
-                  No sentiment data yet. Submit headlines in AI News Center!
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {leaderboard.map((item) => {
-                    const score = item.score;
-                    const isPositive = score > 0;
-                    const isNegative = score < 0;
-                    
-                    const barWidth = Math.min(100, (Math.abs(score) / maxAbsScore) * 100);
-                    
-                    return (
-                      <div key={item.ticker} className="flex flex-col gap-2 cursor-pointer" onClick={() => setSelectedStock(item.ticker)}>
-                        <div className="flex justify-between items-center text-xs font-semibold">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-white font-mono">{item.ticker}</span>
-                            <span className="text-[10px] text-[#848e9c] font-normal truncate max-w-[120px]">{companyNames[item.ticker]}</span>
-                          </div>
-                          
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono ${
-                            isPositive ? 'bg-[#089981]/15 text-[#089981]' :
-                            isNegative ? 'bg-[#F23645]/15 text-[#F23645]' :
-                            'bg-slate-800 text-slate-400'
-                          }`}>
-                            {isPositive ? '+' : ''}{score.toFixed(2)}
-                          </span>
-                        </div>
-
-                        {/* Bidirectional progress bar container */}
-                        <div className="h-1.5 w-full bg-[#0c0f16] rounded-full overflow-hidden flex relative border border-[#2a2e39]">
-                          <div className="absolute inset-y-0 left-1/2 w-0.5 bg-[#2a2e39] z-10"></div>
-                          
-                          {/* Left (Negative) */}
-                          <div className="w-1/2 flex justify-end">
-                            {isNegative && (
-                              <div 
-                                style={{ width: `${barWidth}%` }} 
-                                className="h-full bg-gradient-to-l from-[#F23645] to-[#f23645]/70 rounded-l-full"
-                              ></div>
-                            )}
-                          </div>
-
-                          {/* Right (Positive) */}
-                          <div className="w-1/2">
-                            {isPositive && (
-                              <div 
-                                style={{ width: `${barWidth}%` }} 
-                                className="h-full bg-gradient-to-r from-[#089981] to-[#089981]/70 rounded-r-full"
-                              ></div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
           </div>
         ) : (
           /* ================================================================= */
-          /* AI NEWS CENTER TAB                                                */
+          /* AI NEWS CENTER VIEW (Horizontal Strip & Single-Column Layout)     */
           /* ================================================================= */
           <div className="space-y-6 max-w-4xl mx-auto">
             
+            {/* Horizontal Leaderboard strip at the top */}
+            {renderLeaderboard()}
+
             {/* Submission Form */}
-            <div className="bg-[#131722] p-5 rounded-md border border-[#2A2E39] shadow-lg">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[#b2b5be] mb-1 flex items-center gap-2">
-                <Newspaper className="text-[#2962ff] w-4 h-4" /> Submit Headline for AI Sentiment
+            <div className="bg-[#131313] p-5 rounded-xl border border-[rgba(255,255,255,0.08)] shadow-lg">
+              <h2 className="text-[17px] font-bold uppercase tracking-[0.01em] text-[#B2B5BE] mb-1 flex items-center gap-2 leading-relaxed">
+                <Newspaper className="text-[#2962ff] w-5 h-5" /> Submit Headline for AI Sentiment
               </h2>
-              <p className="text-xs text-[#848e9c] mb-6">
-                Type in headlines to feed the BullMQ queue. Google Gemini parses the text to output scores and explanations.
+              <p className="text-[13.6px] text-[#B2B5BE] mb-6 font-medium leading-relaxed">
+                Submit a financial headline and our AI engine will analyze its market sentiment in real time.
               </p>
 
               <form onSubmit={analyzeNews} className="space-y-4">
@@ -565,7 +570,7 @@ export default function App() {
                   {/* Select Ticker */}
                   <div className="relative md:w-48">
                     <select 
-                      className="w-full bg-black border border-[#2a2e39] text-[#d1d4dc] px-4 py-2.5 rounded focus:outline-none focus:border-[#2962ff] text-sm font-semibold appearance-none cursor-pointer"
+                      className="w-full bg-[#161616] border border-[rgba(255,255,255,0.08)] text-[#d1d4dc] px-4 py-2.5 rounded-[8px] focus:outline-none focus:border-[#2962ff] text-sm font-semibold appearance-none cursor-pointer"
                       value={ticker} 
                       onChange={e => setTicker(e.target.value)}
                     >
@@ -581,7 +586,7 @@ export default function App() {
                   {/* Input text */}
                   <input 
                     type="text"
-                    className="flex-1 bg-black border border-[#2a2e39] text-white placeholder-[#4c525e] px-4 py-2.5 rounded focus:outline-none focus:border-[#2962ff] text-sm" 
+                    className="flex-1 bg-[#161616] border border-[rgba(255,255,255,0.08)] text-white placeholder-[#4c525e] px-4 py-2.5 rounded-[8px] focus:outline-none focus:border-[#2962ff] text-sm" 
                     placeholder="Enter financial headline (e.g. 'Nvidia reveals groundbreaking chips at keynote')..." 
                     value={headline} 
                     onChange={e => setHeadline(e.target.value)}
@@ -591,19 +596,19 @@ export default function App() {
                   {/* Submit */}
                   <button 
                     type="submit"
-                    className="bg-[#2962ff] text-white font-semibold text-sm px-6 py-2.5 rounded hover:bg-[#1e53e5] active:bg-[#1546cb] focus:outline-none transition-colors disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
+                    className="bg-[#2962ff] text-white font-semibold text-sm px-5 py-2.5 rounded-[8px] hover:bg-[#1e53e5] active:bg-[#1546cb] focus:outline-none transition-colors disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap border-none"
                     disabled={isAnalyzing || !headline.trim()}
                   >
                     {isAnalyzing ? (
-                      <>
+                      <span className="flex items-center gap-2">
                         <RefreshCw className="w-4 h-4 animate-spin" />
                         Analyzing...
-                      </>
+                      </span>
                     ) : (
-                      <>
+                      <span className="flex items-center gap-2">
                         <Brain className="w-4 h-4" />
                         Analyze Sentiment
-                      </>
+                      </span>
                     )}
                   </button>
                 </div>
@@ -611,14 +616,14 @@ export default function App() {
             </div>
 
             {/* Global submissions feed */}
-            <div className="bg-[#131722] p-5 rounded-md border border-[#2A2E39] shadow-lg">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[#b2b5be] mb-4 flex items-center gap-2">
-                <History className="text-[#2962ff] w-4 h-4" /> Recent Sentiment Analysis Logs
+            <div className="bg-[#131313] p-5 rounded-xl border border-[rgba(255,255,255,0.08)] shadow-lg">
+              <h2 className="text-[17px] font-bold uppercase tracking-[0.01em] text-[#B2B5BE] mb-4 flex items-center gap-2 leading-relaxed">
+                <History className="text-[#2962ff] w-5 h-5" /> Recent Sentiment Analysis Logs
               </h2>
 
               {headlineLogs.length === 0 ? (
-                <div className="py-8 text-center text-[#848e9c] text-xs font-medium">
-                  No submissions have been recorded in MongoDB yet.
+                <div className="py-8 text-center text-[#B2B5BE] text-sm font-medium leading-relaxed">
+                  No submissions have been recorded yet.
                 </div>
               ) : (
                 <div className="space-y-3.5 pr-1">
@@ -631,37 +636,37 @@ export default function App() {
                     return (
                       <div 
                         key={log.id || log._id} 
-                        className="bg-[#0c0f16] p-4 rounded-md border border-[#2A2E39] hover:border-slate-700 transition-all text-xs space-y-2"
+                        className="bg-[#161616] p-5 rounded-xl border border-[rgba(255,255,255,0.08)] hover:border-slate-700 transition-all space-y-2.5"
                       >
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-white font-mono bg-black px-1.5 py-0.5 rounded border border-[#2a2e39]">
+                        <div className="flex justify-between items-center leading-relaxed">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-[13.6px] font-semibold text-white bg-black px-1.5 py-0.5 rounded border border-[rgba(255,255,255,0.08)]">
                               {log.ticker}
                             </span>
-                            <span className="text-[10px] text-[#848e9c] font-mono">
+                            <span className="text-[10px] text-[#B2B5BE] font-medium">
                               {log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : 'Just now'}
                             </span>
                           </div>
                           
                           {log.status === 'analyzing' && (
-                            <span className="text-[#2962ff] flex items-center gap-1 font-semibold">
+                            <span className="text-[#2962ff] text-[13.6px] flex items-center gap-1 font-semibold">
                               <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Analyzing...
                             </span>
                           )}
                           {log.status === 'queued' && (
-                            <span className="text-amber-500 flex items-center gap-1 font-semibold animate-pulse">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-amber-500" /> Processing ZSET
+                            <span className="text-amber-500 text-[13.6px] flex items-center gap-1 font-semibold animate-pulse">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-amber-500" /> Processing
                             </span>
                           )}
                           {log.status === 'failed' && (
-                            <span className="text-[#F23645] flex items-center gap-1 font-semibold">
+                            <span className="text-[#F23645] text-[13.6px] flex items-center gap-1 font-semibold">
                               <XCircle className="w-3.5 h-3.5 text-[#F23645]" /> Failed
                             </span>
                           )}
                           {isCompleted && showScore && (
-                            <span className={`px-2 py-0.5 rounded font-bold font-mono text-[10px] ${
-                              isPositive ? 'bg-[#089981]/15 text-[#089981] border border-[#089981]/20' :
-                              isNegative ? 'bg-[#F23645]/15 text-[#F23645] border border-[#F23645]/20' :
+                            <span className={`px-2 py-0.5 rounded font-bold text-[13.6px] ${
+                              isPositive ? 'bg-[#089981]/10 text-[#089981]' :
+                              isNegative ? 'bg-[#F23645]/10 text-[#F23645]' :
                               'bg-slate-800 text-slate-400'
                             }`}>
                               {isPositive ? '+' : ''}{log.score}
@@ -669,13 +674,13 @@ export default function App() {
                           )}
                         </div>
                         
-                        <p className="text-slate-200 font-semibold leading-relaxed">
+                        <p className="text-[16px] font-semibold text-slate-100 leading-[1.45]">
                           "{log.headline}"
                         </p>
 
                         {isCompleted && log.explanation && (
-                          <div className="bg-black p-2.5 rounded border border-[#2a2e39] mt-1">
-                            <p className="text-[#b2b5be] text-[11px] leading-relaxed">
+                          <div className="bg-black/40 p-3.5 rounded border border-[rgba(255,255,255,0.08)] mt-1.5">
+                            <p className="text-[#B2B5BE] text-[14.4px] leading-[1.45]">
                               <span className="text-[#2962ff] font-semibold">💡 AI Explanation:</span> {log.explanation}
                             </p>
                           </div>
@@ -701,24 +706,24 @@ export default function App() {
 
       {/* Slide-out Stock Deep-Dive Drawer */}
       <div 
-        className={`fixed top-0 right-0 h-full w-full md:w-[440px] bg-[#131722] border-l border-[#2a2e39] shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full md:w-[460px] bg-[#131313] border-l border-[rgba(255,255,255,0.08)] shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
           selectedStock ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {selectedStock && (
           <>
             {/* Drawer Header */}
-            <div className="p-5 border-b border-[#2a2e39] flex items-center justify-between bg-black/25">
+            <div className="p-5 border-b border-[rgba(255,255,255,0.08)] flex items-center justify-between bg-black/10">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold font-mono text-white">{selectedStock}</span>
-                  <span className="text-xs text-[#848e9c] font-medium">{companyNames[selectedStock]}</span>
+                  <span className="font-bold text-[16px] text-white bg-black px-1.5 py-0.5 rounded border border-[rgba(255,255,255,0.08)] leading-none">{selectedStock}</span>
+                  <span className="text-[13.6px] text-[#B2B5BE] font-medium leading-none">{companyNames[selectedStock]}</span>
                 </div>
-                <div className="flex items-baseline gap-2 mt-1.5">
-                  <span className="text-2xl font-bold font-mono text-white">
+                <div className="flex items-baseline gap-2 mt-2">
+                  <span className="text-[30px] font-bold text-white tracking-tight leading-none">
                     ${stocks[selectedStock]?.toFixed(2) || '0.00'}
                   </span>
-                  <span className={`text-xs font-semibold flex items-center ${
+                  <span className={`text-[13.6px] font-semibold flex items-center leading-none ${
                     drawerIsUp ? 'text-[#089981]' : 'text-[#F23645]'
                   }`}>
                     {drawerIsUp ? '+' : ''}{drawerPercentChange}%
@@ -727,7 +732,7 @@ export default function App() {
               </div>
               <button 
                 onClick={() => setSelectedStock(null)}
-                className="text-[#848e9c] hover:text-white p-1 rounded hover:bg-slate-800 transition-colors"
+                className="text-[#B2B5BE] hover:text-white p-1 rounded hover:bg-slate-800 transition-colors"
               >
                 <XCircle className="w-6 h-6" />
               </button>
@@ -736,10 +741,10 @@ export default function App() {
             {/* Drawer Body (Scrollable) */}
             <div className="flex-1 overflow-y-auto p-5 space-y-6">
               {/* Detailed Performance Chart */}
-              <div className="bg-[#0c0f16] p-4 rounded-md border border-[#2a2e39]">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#848e9c] mb-4">Price Performance</h3>
+              <div className="bg-[#161616] p-5 rounded-xl border border-[rgba(255,255,255,0.08)]">
+                <h3 className="text-[13.6px] font-bold uppercase tracking-[-0.01em] text-[#B2B5BE] mb-4">Price Performance</h3>
                 <DetailedChart history={drawerHistory} isUp={drawerIsUp} />
-                <div className="flex justify-between items-center text-[10px] text-[#848e9c] font-mono mt-3 border-t border-[#2a2e39]/40 pt-2.5">
+                <div className="flex justify-between items-center text-[10px] text-[#B2B5BE] font-medium mt-3 border-t border-[rgba(255,255,255,0.08)] pt-2.5">
                   <span>Session Min: ${Math.min(...drawerHistory, 0).toFixed(2)}</span>
                   <span>Session Max: ${Math.max(...drawerHistory, 0).toFixed(2)}</span>
                 </div>
@@ -747,9 +752,9 @@ export default function App() {
 
               {/* Stock-specific AI sentiment list */}
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#848e9c] mb-3">AI Sentiment Timeline</h3>
+                <h3 className="text-[13.6px] font-bold uppercase tracking-[-0.01em] text-[#B2B5BE] mb-3">AI Sentiment Timeline</h3>
                 {drawerNews.length === 0 ? (
-                  <div className="text-center py-8 border border-dashed border-[#2a2e39] rounded text-[#848e9c] text-xs">
+                  <div className="text-center py-8 border border-dashed border-[rgba(255,255,255,0.08)] rounded-xl text-[#B2B5BE] text-xs">
                     No sentiment news recorded for {selectedStock} yet.
                   </div>
                 ) : (
@@ -758,24 +763,24 @@ export default function App() {
                       const isPositive = log.score > 0;
                       const isNegative = log.score < 0;
                       return (
-                        <div key={log.id || log._id} className="bg-[#0c0f16] p-3 rounded-md border border-[#2a2e39] text-xs space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="text-[10px] text-[#848e9c] font-mono">
+                        <div key={log.id || log._id} className="bg-[#161616] p-4 rounded-xl border border-[rgba(255,255,255,0.08)] space-y-2.5">
+                          <div className="flex justify-between items-center leading-relaxed">
+                            <span className="text-[10px] text-[#B2B5BE] font-medium">
                               {log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : 'Just now'}
                             </span>
-                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono ${
-                              isPositive ? 'bg-[#089981]/15 text-[#089981]' :
-                              isNegative ? 'bg-[#F23645]/15 text-[#F23645]' :
-                              'bg-slate-800 text-[#848e9c]'
+                            <span className={`px-2 py-0.5 rounded text-[13.6px] font-bold ${
+                              isPositive ? 'bg-[#089981]/10 text-[#089981]' :
+                              isNegative ? 'bg-[#F23645]/10 text-[#F23645]' :
+                              'bg-slate-800 text-[#B2B5BE]'
                             }`}>
                               {isPositive ? '+' : ''}{log.score}
                             </span>
                           </div>
-                          <p className="text-slate-200 font-medium leading-relaxed">
+                          <p className="text-[16px] font-semibold text-slate-200 leading-[1.45]">
                             "{log.headline}"
                           </p>
                           {log.explanation && (
-                            <p className="text-[#b2b5be] text-[10px] border-t border-[#2a2e39]/40 pt-1.5 leading-relaxed">
+                            <p className="text-[#B2B5BE] text-[14.4px] border-t border-[rgba(255,255,255,0.08)] pt-1.5 leading-[1.45]">
                               <span className="text-[#2962ff] font-semibold">💡 AI Explanation:</span> {log.explanation}
                             </p>
                           )}
