@@ -234,6 +234,7 @@ export default function App() {
   const [priceHistory, setPriceHistory] = useState({
     AAPL: [], TSLA: [], GOOGL: [], AMZN: [], MSFT: [], NVDA: [], META: [], NFLX: [], AMD: [], COIN: []
   });
+  // eslint-disable-next-line no-unused-vars
   const [flashStates, setFlashStates] = useState({});
   const [leaderboard, setLeaderboard] = useState([]);
   
@@ -837,10 +838,6 @@ export default function App() {
                   const percentChange = firstPrice !== 0 ? ((change / firstPrice) * 100).toFixed(2) : '0.00';
                   const isUp = change >= 0;
                   
-                  const flash = flashStates[t];
-                  const flashClass = flash && (Date.now() - flash.timestamp < 1200)
-                    ? (flash.direction === 'up' ? 'animate-flash-up' : 'animate-flash-down')
-                    : '';
 
                   return (
                     <div 
@@ -848,7 +845,7 @@ export default function App() {
                       onClick={() => setSelectedStock(t)}
                       className={`p-6 md:p-8 flex flex-col justify-between cursor-pointer transition-colors duration-200 relative select-none hover:bg-white/[0.01] border-b border-premium-border overflow-hidden ${
                         index % 3 !== 2 ? 'md:border-r border-premium-border' : ''
-                      } ${flashClass}`}
+                      }`}
                     >
 
 
