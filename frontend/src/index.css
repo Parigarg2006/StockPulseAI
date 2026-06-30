@@ -7,14 +7,14 @@
 /* CSS Variables for Premium Themes */
 :root {
   /* Onyx default (Pitch Black & Charcoal Glass) */
-  --bg-color: #040404;
+  --bg-color: #000000;
   --card-bg: rgba(18, 18, 22, 0.7);
   --card-border: rgba(255, 255, 255, 0.08);
   --accent-color: #3b82f6;
   --accent-glow: rgba(59, 130, 246, 0.15);
   --text-muted: #8e929e;
   --text-title: #ffffff;
-  --header-bg: rgba(4, 4, 4, 0.85);
+  --header-bg: rgba(0, 0, 0, 0.85);
   --input-bg: rgba(10, 10, 12, 0.8);
 }
 
@@ -165,4 +165,13 @@ button {
   transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+/* Watchlist grid cell scanline animations */
+@keyframes scanline-sweep {
+  0% { transform: translateY(-70%) rotate(15deg); }
+  100% { transform: translateY(70%) rotate(15deg); }
+}
+.scanline-glow {
+  animation: scanline-sweep 12s linear infinite;
 }
