@@ -592,7 +592,7 @@ export default function App() {
       <div className="w-full border-b border-premium-border pb-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-[18px] font-extrabold uppercase tracking-wide text-premium-textTitle flex items-center gap-2.5">
-            <LeaderboardIcon className="text-premium-accent w-5.5 h-5.5" /> AI Sentiment Leaderboard
+            <LeaderboardIcon className="text-premium-accent w-[18px] h-[18px]" /> AI Sentiment Leaderboard
           </h2>
           <span className="text-[11px] font-bold text-premium-textMuted uppercase tracking-wider bg-white/5 px-2.5 py-1 rounded-md">
             7-Day Decayed
@@ -628,10 +628,10 @@ export default function App() {
                   <motion.div 
                     variants={itemVariants}
                     onClick={() => setSelectedStock(item.ticker)}
-                    className={`flex items-center justify-between px-6 py-5 hover:bg-zinc-900/50 transition-all duration-300 cursor-pointer select-none group border-b border-premium-border border-l-3 border-l-transparent ${rowBorderAccent}`}
+                    className={`grid grid-cols-12 items-center px-6 py-5 hover:bg-zinc-900/50 transition-all duration-300 cursor-pointer select-none group border-b border-premium-border border-l-3 border-l-transparent ${rowBorderAccent}`}
                   >
                     {/* Left Side: Rank Badge & Symbol */}
-                    <div className="flex items-center gap-4">
+                    <div className="col-span-7 md:col-span-5 flex items-center gap-4">
                       {getRankBadge(index)}
                       <div className="flex items-baseline gap-2">
                         <span className="text-[15.5px] font-extrabold text-white group-hover:text-premium-accent transition-colors">
@@ -644,7 +644,7 @@ export default function App() {
                     </div>
 
                     {/* Middle: Progress Bar with accurate capsule bars & inline percentage indicators */}
-                    <div className="hidden md:flex items-center gap-3.5 w-[250px] flex-shrink-0 mx-6">
+                    <div className="hidden md:flex col-span-4 items-center gap-3.5 w-full mx-0">
                       <span className={`text-sm font-bold font-mono tracking-tight w-14 text-right ${isPositive ? 'text-[#10b981]' : isNegative ? 'text-[#f43f5e]' : 'text-slate-400'}`}>
                         {isNegative ? `${barWidth.toFixed(1)}%` : ''}
                       </span>
@@ -679,7 +679,7 @@ export default function App() {
                     </div>
 
                     {/* Right Side: Score & Label */}
-                    <div className="flex items-center gap-6">
+                    <div className="col-span-5 md:col-span-3 flex items-center justify-end gap-6 justify-self-end">
                       <span className={`text-[11px] px-2 py-0.5 rounded font-extrabold uppercase tracking-wider shadow-[0_0_8px_rgba(255,255,255,0.02)] ${
                         isPositive ? 'bg-[#10b981]/15 text-[#10b981]' :
                         isNegative ? 'bg-[#f43f5e]/15 text-[#f43f5e]' :
@@ -946,7 +946,7 @@ export default function App() {
                         </>
                       ) : (
                         <>
-                          <LeaderboardIcon className="w-4 h-4" />
+                          <LeaderboardIcon className="w-[14px] h-[14px]" />
                           Evaluate Sentiment
                         </>
                       )}
