@@ -713,12 +713,10 @@ export default function App() {
           <div className="flex items-center gap-8 md:gap-12">
             {/* Logo */}
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-premium-accent/15 rounded-lg flex items-center justify-center border border-premium-accent/30 text-premium-accent">
-                <svg className="w-5.5 h-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M3 17l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="21" cy="7" r="1.5" fill="currentColor"/>
-                </svg>
-              </div>
+              <svg className="w-6 h-6 text-premium-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M3 17l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="21" cy="7" r="1.5" fill="currentColor"/>
+              </svg>
               <span className="font-extrabold text-[19px] text-white tracking-tight block">StockPulse AI</span>
             </div>
             
