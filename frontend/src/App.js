@@ -692,6 +692,22 @@ export default function App() {
   return (
     <div className="min-h-screen bg-premium-bg text-[#eaebed] relative transition-colors duration-400">
       
+      {/* Global SVG Gradients for Wave Effects */}
+      <svg className="hidden" aria-hidden="true">
+        <defs>
+          <linearGradient id="wave-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent-color)" stopOpacity="0.25" />
+            <stop offset="50%" stopColor="#10b981" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="wave-grad-2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
+            <stop offset="50%" stopColor="var(--accent-color)" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
+      
       {/* Sticky header and ticker container */}
       <div className="sticky top-0 z-30 w-full bg-[#040406]/85 backdrop-blur-md border-b border-white/10 select-none">
         {/* Top Professional Navigation Bar */}
@@ -843,8 +859,13 @@ export default function App() {
               </div>
 
               <div 
-                className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-premium-border"
+                className="grid grid-cols-1 md:grid-cols-3 gap-0 relative pt-[1px]"
               >
+                {/* Glowing grid top wave line */}
+                <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-premium-accent/30 to-transparent overflow-hidden">
+                  <div className="w-[200%] h-full bg-gradient-to-r from-premium-accent via-[#10b981] to-premium-accent animate-wave-line" />
+                </div>
+
                 {Object.entries(stocks).map(([t, price], index) => {
                   const history = priceHistory[t] || [];
                   const firstPrice = history[0] || price;
@@ -861,17 +882,30 @@ export default function App() {
                     <div 
                       key={t} 
                       onClick={() => setSelectedStock(t)}
-                      className={`p-6 md:p-8 flex flex-col justify-between cursor-pointer transition-colors duration-200 relative select-none hover:bg-white/[0.01] border-b border-premium-border overflow-hidden ${
-                        index % 3 !== 2 ? 'md:border-r border-premium-border' : ''
-                      } ${flashClass}`}
+                      className={`p-6 md:p-8 flex flex-col justify-between cursor-pointer transition-colors duration-200 relative select-none hover:bg-white/[0.01] overflow-hidden ${flashClass}`}
                     >
-                      {/* Subtle animated scanline surface overlay */}
-                      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30 z-0">
-                        {/* Static isometric fine lines */}
-                        <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.012)_0px,rgba(255,255,255,0.012)_1px,transparent_1px,transparent_6px)]" />
-                        {/* Sweeping reflection scanline */}
-                        <div className="absolute inset-x-0 top-0 h-[220%] bg-gradient-to-b from-transparent via-white/[0.025] to-transparent scanline-glow" />
+                      {/* 3D Neon Water Wave Effect Background Overlay */}
+                      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-10 select-none">
+                        <svg className="absolute bottom-0 left-0 w-[200%] h-32" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ animation: 'wave-flow 16s linear infinite' }}>
+                          <path d="M 0,60 Q 150,30 300,60 T 600,60 T 900,60 T 1200,60 L 1200,120 L 0,120 Z" fill="url(#wave-grad)" />
+                        </svg>
+                        <svg className="absolute bottom-0 left-0 w-[200%] h-28 opacity-60" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ animation: 'wave-flow-reverse 24s linear infinite', animationDelay: '-4s' }}>
+                          <path d="M 0,70 Q 150,90 300,70 T 600,70 T 900,70 T 1200,70 L 1200,120 L 0,120 Z" fill="url(#wave-grad-2)" />
+                        </svg>
                       </div>
+
+                      {/* Animated Neon Wave dividers along edges */}
+                      {/* Bottom border wave line */}
+                      <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-premium-accent/30 to-transparent overflow-hidden">
+                        <div className="w-[200%] h-full bg-gradient-to-r from-premium-accent via-[#10b981] to-premium-accent animate-wave-line" />
+                      </div>
+
+                      {/* Right border wave line */}
+                      {index % 3 !== 2 && (
+                        <div className="hidden md:block absolute right-0 top-0 bottom-0 w-[1.5px] bg-gradient-to-b from-transparent via-premium-accent/30 to-transparent overflow-hidden">
+                          <div className="h-[200%] w-full bg-gradient-to-b from-premium-accent via-[#10b981] to-premium-accent animate-wave-line-vertical" />
+                        </div>
+                      )}
 
                       <div className="relative z-10 w-full flex flex-col justify-between h-full">
                         <div className="flex items-start justify-between">

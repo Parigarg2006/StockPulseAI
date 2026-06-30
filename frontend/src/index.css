@@ -167,11 +167,33 @@ button {
   -webkit-backface-visibility: hidden;
 }
 
-/* Watchlist grid cell scanline animations */
-@keyframes scanline-sweep {
-  0% { transform: translateY(-70%) rotate(15deg); }
-  100% { transform: translateY(70%) rotate(15deg); }
+/* Animated 3D Neon Water Wave & Grid Line Keyframes */
+@keyframes wave-flow {
+  0% { transform: translateX(0) translateZ(0); }
+  100% { transform: translateX(-50%) translateZ(0); }
 }
-.scanline-glow {
-  animation: scanline-sweep 12s linear infinite;
+
+@keyframes wave-flow-reverse {
+  0% { transform: translateX(-50%) translateZ(0); }
+  100% { transform: translateX(0) translateZ(0); }
+}
+
+@keyframes wave-line-horiz {
+  0% { transform: translateX(-50%) translateZ(0); }
+  100% { transform: translateX(0) translateZ(0); }
+}
+
+@keyframes wave-line-vert {
+  0% { transform: translateY(-50%) translateZ(0); }
+  100% { transform: translateY(0) translateZ(0); }
+}
+
+.animate-wave-line {
+  will-change: transform;
+  animation: wave-line-horiz 16s linear infinite;
+}
+
+.animate-wave-line-vertical {
+  will-change: transform;
+  animation: wave-line-vert 16s linear infinite;
 }
